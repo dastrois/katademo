@@ -3,7 +3,7 @@ package com.example.demo.app.services;
 
 import com.example.demo.model.dao.Customer;
 import com.example.demo.model.vo.CustomerMatches;
-import com.example.demo.model.vo.common.ExternalShoppingList;
+import com.example.demo.model.vo.common.ExternalShoppingItem;
 
 public interface ICustomerDataAccess {
     CustomerMatches loadCompanyCustomer(String externalId, String companyNumber);
@@ -14,5 +14,5 @@ public interface ICustomerDataAccess {
 
     Customer createCustomerRecord(Customer customer);
 
-    void updateShoppingList(Customer customer, ExternalShoppingList consumerShoppingList);
+    void updateShoppingList(Customer customer, ExternalShoppingItem consumerShoppingList);
 }

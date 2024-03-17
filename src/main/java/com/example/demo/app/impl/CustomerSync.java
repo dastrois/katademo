@@ -7,10 +7,7 @@ import com.example.demo.model.dao.Customer;
 import com.example.demo.model.exception.ConflictException;
 import com.example.demo.model.vo.CustomerMatches;
 import com.example.demo.model.vo.common.ExternalCustomer;
-import com.example.demo.model.vo.common.ExternalShoppingList;
-import ma.glasnost.orika.MapperFacade;
-import ma.glasnost.orika.MapperFactory;
-import ma.glasnost.orika.impl.DefaultMapperFactory;
+import com.example.demo.model.vo.common.ExternalShoppingItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -71,8 +68,8 @@ public class CustomerSync implements com.example.demo.app.ICustomerSync {
     }
 
     private void updateRelations(ExternalCustomer externalCustomer, Customer customer) {
-        List<ExternalShoppingList> consumerShoppingLists = externalCustomer.getShoppingLists();
-        for (ExternalShoppingList consumerShoppingList : consumerShoppingLists) {
+        List<ExternalShoppingItem> consumerShoppingLists = externalCustomer.getShoppingLists();
+        for (ExternalShoppingItem consumerShoppingList : consumerShoppingLists) {
             this.customerDataAccess.updateShoppingList(customer, consumerShoppingList);
         }
     }
@@ -117,10 +114,18 @@ public class CustomerSync implements com.example.demo.app.ICustomerSync {
 
     private void updateContactInfo(ExternalCustomer externalCustomer, Customer customer) {
 
-        MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
-        MapperFacade mapper = mapperFactory.getMapperFacade();
+        //TODO should use orika
 
-        customer.setAddress(mapper.map(externalCustomer.getPostalAddress(), Address.class));
+        Address adr = new Address();
+        adr.setCity(externalCustomer.getPostalAddress().getCity());
+        adr.setStreet(externalCustomer.getPostalAddress().getStreet());
+        adr.setPostalCode(externalCustomer.getPostalAddress().getPostalCode());
+
+        customer.setAddress(adr);
+//        MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
+//        MapperFacade mapper = mapperFactory.getMapperFacade();
+//
+//        customer.setAddress(mapper.map(externalCustomer.getPostalAddress(), Address.class));
 
     }
 

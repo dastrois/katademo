@@ -9,7 +9,7 @@ public class ExternalCustomer {
     private ExternalAddress address;
     private String name;
     private String preferredStore;
-    private List<ExternalShoppingList> shoppingLists;
+    private List<ExternalShoppingItem> shoppingLists;
     private String externalId;
     private String companyNumber;
 
@@ -67,11 +67,11 @@ public class ExternalCustomer {
         this.preferredStore = preferredStore;
     }
 
-    public List<ExternalShoppingList> getShoppingLists() {
+    public List<ExternalShoppingItem> getShoppingLists() {
         return shoppingLists;
     }
 
-    public void setShoppingLists(List<ExternalShoppingList> shoppingLists) {
+    public void setShoppingLists(List<ExternalShoppingItem> shoppingLists) {
         this.shoppingLists = shoppingLists;
     }
 

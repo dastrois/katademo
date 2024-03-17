@@ -4,7 +4,7 @@ package com.example.demo.app.services.impl;
 import com.example.demo.app.services.ICustomerDataAccess;
 import com.example.demo.model.dao.Customer;
 import com.example.demo.model.vo.CustomerMatches;
-import com.example.demo.model.vo.common.ExternalShoppingList;
+import com.example.demo.model.vo.common.ExternalShoppingItem;
 import com.example.demo.repository.ICustomerDataLayer;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
@@ -62,7 +62,7 @@ public class CustomerDataAccess implements ICustomerDataAccess {
     }
 
     @Override
-    public void updateShoppingList(Customer customer, ExternalShoppingList consumerShoppingList) {
+    public void updateShoppingList(Customer customer, ExternalShoppingItem consumerShoppingList) {
 
         MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
         MapperFacade mapper = mapperFactory.getMapperFacade();
