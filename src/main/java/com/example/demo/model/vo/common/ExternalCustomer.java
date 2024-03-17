@@ -13,6 +13,20 @@ public class ExternalCustomer {
     private String externalId;
     private String companyNumber;
 
+    private int bonusPointBalance;
+
+    public ExternalAddress getAddress() {
+        return address;
+    }
+
+    public int getBonusPointBalance() {
+        return bonusPointBalance;
+    }
+
+    public void setBonusPointBalance(int bonusPointBalance) {
+        this.bonusPointBalance = bonusPointBalance;
+    }
+
     public String getExternalId() {
         return externalId;
     }
