@@ -6,9 +6,9 @@ import com.example.demo.model.vo.CustomerMatches;
 import com.example.demo.model.vo.common.ExternalShoppingItem;
 
 public interface ICustomerDataAccess {
-    CustomerMatches loadCompanyCustomer(String externalId, String companyNumber);
+    CustomerMatches loadCustomer(String externalId, String companyNumber);
 
-    CustomerMatches loadPersonCustomer(String externalId);
+    CustomerMatches loadCustomer(String externalId);
 
     Customer updateCustomerRecord(Customer customer);
 
