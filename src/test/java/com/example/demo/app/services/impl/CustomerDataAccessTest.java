@@ -22,7 +22,7 @@ class CustomerDataAccessTest {
     }
 
     @Test
-    void testLoadCompanyCustomerNoDup() {
+    void testLoadCompanyCustomerNoDuplicate() {
 
         Customer cus = new Customer();
         cus.setCompanyNumber("123");
@@ -37,7 +37,7 @@ class CustomerDataAccessTest {
         Assert.isTrue( cm.getDuplicates().size() == 0, "");
     }
     @Test
-    void testLoadCompanyCustomerDup() {
+    void testLoadCompanyCustomerWithDuplicate() {
 
         Customer cus = new Customer();
         cus.setCompanyNumber("123");
@@ -56,7 +56,7 @@ class CustomerDataAccessTest {
 
     }
     @Test
-    void testLoadCompanyCustomerByCN() {
+    void testLoadCompanyCustomerByCompanyName() {
 
         Customer cus = new Customer();
         cus.setCompanyNumber("123");
@@ -69,8 +69,23 @@ class CustomerDataAccessTest {
 
         Assert.notNull(cm, "");
         Assert.isTrue( ! cm.hasDuplicates(), "");
-
         Assert.isTrue(cm.getCustomer().getCompanyNumber() == cus.getCompanyNumber(), "");
+    }
+
+    @Test
+    public void testLoadPersonCustomer(){
+        Customer cus = new Customer();
+        cus.setCustomerType(CustomerType.PERSON);
+        cus.setName("ert");
+        cus.setExternalId("jko");
+
+        Mockito.when(customerDataLayer.findByExternalId(ArgumentMatchers.anyString())).thenReturn(cus);
+
+        CustomerMatches cm = testObject.loadPersonCustomer("ddd");
+        Assert.notNull(cm, "not null");
+        Assert.notNull(cm.getCustomer(), "customer not null");
+
+        Assert.isTrue(cm.getCustomer().getName() == cus.getName(), "customer name");
 
     }
 }

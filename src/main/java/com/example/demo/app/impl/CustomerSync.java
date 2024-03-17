@@ -4,31 +4,28 @@ import com.example.demo.app.services.impl.CustomerDataAccess;
 import com.example.demo.model.constant.CustomerType;
 import com.example.demo.model.dao.Address;
 import com.example.demo.model.dao.Customer;
+import com.example.demo.model.dao.ShoppingList;
 import com.example.demo.model.exception.ConflictException;
 import com.example.demo.model.vo.CustomerMatches;
 import com.example.demo.model.vo.common.ExternalCustomer;
 import com.example.demo.model.vo.common.ExternalShoppingItem;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.annotation.Validated;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@Validated
 public class CustomerSync implements com.example.demo.app.ICustomerSync {
 
     @Autowired
     private CustomerDataAccess customerDataAccess;
 
-//    public CustomerSync(CustomerDataLayer customerDataLayer) {
-//        this(new CustomerDataAccess(customerDataLayer));
-//    }
-
-//    public CustomerSync(CustomerDataAccess db) {
-//        this.customerDataAccess = db;
-//    }
-//
     @Override
-    public boolean syncWithDataLayer(ExternalCustomer externalCustomer) {
+    public boolean syncWithDataLayer(@NotNull ExternalCustomer externalCustomer) {
 
         CustomerMatches customerMatches;
         if (externalCustomer.isCompany()) {
@@ -68,10 +65,15 @@ public class CustomerSync implements com.example.demo.app.ICustomerSync {
     }
 
     private void updateRelations(ExternalCustomer externalCustomer, Customer customer) {
-        List<ExternalShoppingItem> consumerShoppingLists = externalCustomer.getShoppingLists();
-        for (ExternalShoppingItem consumerShoppingList : consumerShoppingLists) {
-            this.customerDataAccess.updateShoppingList(customer, consumerShoppingList);
+        List<ShoppingList> sl = new ArrayList<>();
+        for (ExternalShoppingItem consumerShoppingItem : externalCustomer.getShoppingLists()) {
+            ShoppingList si = new ShoppingList();
+            si.setCustomer(customer);
+            si.setProducts(consumerShoppingItem.getProducts());
+            sl.add(si);
+//            this.customerDataAccess.updateShoppingList(customer, consumerShoppingItem);
         }
+        customerDataAccess.updateCustomerRecord(customer);
     }
 
     private Customer updateCustomer(Customer customer) {
@@ -129,8 +131,7 @@ public class CustomerSync implements com.example.demo.app.ICustomerSync {
 
     }
 
-    @Override
-    public CustomerMatches loadCompany(ExternalCustomer externalCustomer) {
+    private CustomerMatches loadCompany(ExternalCustomer externalCustomer) {
         final String externalId = externalCustomer.getExternalId();
         final String companyNumber = externalCustomer.getCompanyNumber();
 
@@ -162,8 +163,7 @@ public class CustomerSync implements com.example.demo.app.ICustomerSync {
         return customerMatches;
     }
 
-    @Override
-    public CustomerMatches loadPerson(ExternalCustomer externalCustomer) {
+    private CustomerMatches loadPerson(ExternalCustomer externalCustomer) {
         final String externalId = externalCustomer.getExternalId();
 
         CustomerMatches customerMatches = customerDataAccess.loadPersonCustomer(externalId);

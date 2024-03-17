@@ -6,9 +6,6 @@ import com.example.demo.model.dao.Customer;
 import com.example.demo.model.vo.CustomerMatches;
 import com.example.demo.model.vo.common.ExternalShoppingItem;
 import com.example.demo.repository.ICustomerDataLayer;
-import ma.glasnost.orika.MapperFacade;
-import ma.glasnost.orika.MapperFactory;
-import ma.glasnost.orika.impl.DefaultMapperFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,10 +14,6 @@ public class CustomerDataAccess implements ICustomerDataAccess {
 
     @Autowired
     private ICustomerDataLayer customerDataLayer;
-
-//    public CustomerDataAccess(ICustomerDataLayer customerDataLayer) {
-//        this.customerDataLayer = customerDataLayer;
-//    }
 
     @Override
     public CustomerMatches loadCompanyCustomer(String externalId, String companyNumber) {
@@ -64,8 +57,8 @@ public class CustomerDataAccess implements ICustomerDataAccess {
     @Override
     public void updateShoppingList(Customer customer, ExternalShoppingItem consumerShoppingList) {
 
-        MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
-        MapperFacade mapper = mapperFactory.getMapperFacade();
+
+
 
 //        customer.addShoppingList(mapper.map(consumerShoppingList, ShoppingList.class));
 //        shoppingListDataLayer.updateShoppingList(mapper.map(consumerShoppingList, ShoppingList.class));
