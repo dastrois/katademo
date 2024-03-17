@@ -29,8 +29,9 @@ public class Customer implements Serializable {
     private String name;
 //    @Convert("CustomerType")
     private CustomerType customerType;
-    @Column(name="companyNumber")
     private String companyNumber;
+
+    private int bonusPointBalance;
 
     public long getId() {
         return id;
@@ -118,6 +119,22 @@ public class Customer implements Serializable {
 //        this.setShoppingLists(newList);
 //    }
 
+
+    public List<ShoppingList> getShoppingLists() {
+        return shoppingLists;
+    }
+
+    public void setShoppingLists(List<ShoppingList> shoppingLists) {
+        this.shoppingLists = shoppingLists;
+    }
+
+    public int getBonusPointBalance() {
+        return bonusPointBalance;
+    }
+
+    public void setBonusPointBalance(int bonusPointBalance) {
+        this.bonusPointBalance = bonusPointBalance;
+    }
 
     @Override
     public boolean equals(Object o) {
