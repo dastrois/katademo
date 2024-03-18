@@ -77,7 +77,7 @@ public class CustomerDataAccess implements ICustomerDataAccess {
     }
 
     @Override
-    public Customer upSaveCustomer(@NotNull Customer customer) {
+    public Customer upSaveCustomer(Customer customer) {
         return customerDataLayer.save(customer);
     }
 }

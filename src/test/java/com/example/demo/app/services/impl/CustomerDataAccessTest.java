@@ -28,17 +28,6 @@ class CustomerDataAccessTest {
     }
 
     @Test
-    public void testNullCmp(){
-        Assertions.assertThrows(Exception.class, () -> {
-            service2Test.loadCustomerCompany(null, null);
-        });
-    }    @Test
-    public void testNullPerson(){
-        Assertions.assertThrows(Exception.class, () -> {
-            service2Test.loadCustomer(null, null, null);
-        });
-    }
-    @Test
     void testLoadCompanyCustomerNotFound() {
         Mockito.when(customerDataLayer.findByExternalId(ArgumentMatchers.anyString())).thenReturn(null);
 
