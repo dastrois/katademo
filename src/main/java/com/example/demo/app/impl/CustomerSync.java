@@ -50,7 +50,7 @@ public class CustomerSync implements com.example.demo.app.ICustomerSync {
         } else {
             updateCustomer(customer);
         }
-        updateContactInfo(externalCustomer, customer);
+//        updateContactInfo(externalCustomer, customer);
 
         if (customerMatches.hasDuplicates()) {
             for (Customer duplicate : customerMatches.getDuplicates()) {
@@ -100,6 +100,9 @@ public class CustomerSync implements com.example.demo.app.ICustomerSync {
         return this.customerDataAccess.createCustomerRecord(customer);
     }
 
+    /**
+     * Map all fields from external --> Customer
+     */
     private void populateFields(ExternalCustomer externalCustomer, Customer customer) {
         customer.setName(externalCustomer.getName());
         customer.setPreferredStore(externalCustomer.getPreferredStore());
@@ -109,6 +112,7 @@ public class CustomerSync implements com.example.demo.app.ICustomerSync {
         } else {
             customer.setCustomerType(CustomerType.PERSON);
         }
+        updateContactInfo(externalCustomer, customer);
     }
 
     private void updateContactInfo(ExternalCustomer externalCustomer, Customer customer) {
