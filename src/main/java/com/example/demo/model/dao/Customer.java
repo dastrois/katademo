@@ -11,7 +11,6 @@ import java.util.Objects;
 @SuppressWarnings("serial")
 
 @Entity
-//@Table(name="customer")
 public class Customer implements Serializable {
     @Id
     @GeneratedValue
@@ -81,14 +80,6 @@ public class Customer implements Serializable {
         this.customerType = customerType;
     }
 
-//    public List<ShoppingList> getShoppingLists() {
-//        return shoppingLists;
-//    }
-
-//    public void setShoppingLists(List<ShoppingList> shoppingLists) {
-//        this.shoppingLists = shoppingLists;
-//    }
-
     public String getName() {
         return name;
     }
@@ -112,13 +103,6 @@ public class Customer implements Serializable {
     public void setExternalId(String externalId) {
         this.externalId = externalId;
     }
-
-//    public void addShoppingList(ShoppingList consumerShoppingList) {
-//        ArrayList<ShoppingList> newList = new ArrayList<>(this.shoppingLists);
-//        newList.add(consumerShoppingList);
-//        this.setShoppingLists(newList);
-//    }
-
 
     public List<ShoppingList> getShoppingLists() {
         return shoppingLists;
