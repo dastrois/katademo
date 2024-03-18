@@ -29,8 +29,9 @@ public class Customer implements Serializable {
     private String name;
 //    @Convert("CustomerType")
     private CustomerType customerType;
-    @Column(name="companyNumber")
     private String companyNumber;
+
+    private int bonusPointBalance;
 
     public long getId() {
         return id;
@@ -119,6 +120,22 @@ public class Customer implements Serializable {
 //    }
 
 
+    public List<ShoppingList> getShoppingLists() {
+        return shoppingLists;
+    }
+
+    public void setShoppingLists(List<ShoppingList> shoppingLists) {
+        this.shoppingLists = shoppingLists;
+    }
+
+    public int getBonusPointBalance() {
+        return bonusPointBalance;
+    }
+
+    public void setBonusPointBalance(int bonusPointBalance) {
+        this.bonusPointBalance = bonusPointBalance;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -140,5 +157,13 @@ public class Customer implements Serializable {
                 internalId != null ? "internalId=" + internalId + ", " : "" +
                 externalId != null ? "externalId=" + externalId + ", " : "" +
                  "]";
+    }
+
+    public Customer() {
+    }
+
+    public Customer(String externalId, String masterExternalId) {
+        this.externalId = externalId;
+        this.masterExternalId = masterExternalId;
     }
 }

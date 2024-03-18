@@ -2,73 +2,83 @@ package com.example.demo.app.services.impl;
 
 
 import com.example.demo.app.services.ICustomerDataAccess;
+import com.example.demo.model.constant.CustomerType;
+import com.example.demo.model.constant.MatchTerm;
 import com.example.demo.model.dao.Customer;
+import com.example.demo.model.exception.ConflictException;
 import com.example.demo.model.vo.CustomerMatches;
-import com.example.demo.model.vo.common.ExternalShoppingList;
 import com.example.demo.repository.ICustomerDataLayer;
-import ma.glasnost.orika.MapperFacade;
-import ma.glasnost.orika.MapperFactory;
-import ma.glasnost.orika.impl.DefaultMapperFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CustomerDataAccess implements ICustomerDataAccess {
 
+    private static final Logger log = LoggerFactory.getLogger(CustomerDataAccess.class);
+
     @Autowired
     private ICustomerDataLayer customerDataLayer;
 
-//    public CustomerDataAccess(ICustomerDataLayer customerDataLayer) {
-//        this.customerDataLayer = customerDataLayer;
-//    }
-
     @Override
-    public CustomerMatches loadCompanyCustomer(String externalId, String companyNumber) {
+    public CustomerMatches loadCustomerCompany(String externalId, String companyNumber) {
+        log.debug("load the customer with companyId: {}", companyNumber);
+
         CustomerMatches matches = new CustomerMatches();
-        Customer matchByExternalId = this.customerDataLayer.findByExternalId(externalId);
-        if (matchByExternalId != null) {
-            matches.setCustomer(matchByExternalId);
-            matches.setMatchTerm("ExternalId");
-            Customer matchByMasterId = this.customerDataLayer.findByMasterExternalId(externalId);
-            if (matchByMasterId != null) matches.addDuplicate(matchByMasterId);
-        } else {
-            Customer matchByCompanyNumber = this.customerDataLayer.findByCompanyNumber(companyNumber);
-            if (matchByCompanyNumber != null) {
-                matches.setCustomer(matchByCompanyNumber);
-                matches.setMatchTerm("CompanyNumber");
-            }
+
+        Customer customer;
+
+        customer = this.customerDataLayer.findByCompanyNumber(companyNumber);
+        if (customer == null) {
+            log.debug("nothing founded");
+            return matches;
         }
 
-        return matches;
+        // Verify the right customer
+        if (!CustomerType.COMPANY.equals(customer.getCustomerType()))
+            throw new ConflictException("Existing customer for companyNumber " + companyNumber + " already exists and is not a company");
+
+        if (!customer.getExternalId().equals(externalId)) {
+            throw new ConflictException("Existing customer for companyNumber " + companyNumber + " already exists with different externalId");
+        }
+
+        return completeResponse(customer, MatchTerm.COMPANYNUMBER);
     }
 
     @Override
-    public CustomerMatches loadPersonCustomer(String externalId) {
+    public CustomerMatches loadCustomer(String externalId, CustomerType type, String companyNumber) throws ConflictException {
+        log.debug("load the customer with externalId: {}", externalId);
+
+        Customer matchByPersonalNumber = this.customerDataLayer.findByExternalIdAndCustomerType(externalId, type);
+
+        if (matchByPersonalNumber == null){
+            log.debug("nothing founded");
+            return new CustomerMatches();
+        }
+
+        if (type == CustomerType.COMPANY){
+            // check cmpy Id
+            if (matchByPersonalNumber.getCompanyNumber() != companyNumber)
+                throw new ConflictException("Existing customer for externalNumber " + externalId + " already exists with different companyNumber");
+        }
+
+        return completeResponse(matchByPersonalNumber, MatchTerm.ExTERNALID);
+    }
+
+    private CustomerMatches completeResponse(Customer customer, MatchTerm matchTerm){
+        log.debug("complete the response for customer: {}", customer);
+
         CustomerMatches matches = new CustomerMatches();
-        Customer matchByPersonalNumber = this.customerDataLayer.findByExternalId(externalId);
-        matches.setCustomer(matchByPersonalNumber);
-        if (matchByPersonalNumber != null) matches.setMatchTerm("ExternalId");
+        matches.setMatchTerm(matchTerm);
+        matches.setCustomer(customer);
+        matches.addDuplicate(this.customerDataLayer.findByMasterExternalId(customer.getExternalId()));
+
         return matches;
     }
 
     @Override
-    public Customer updateCustomerRecord(Customer customer) {
+    public Customer upSaveCustomer(Customer customer) {
         return customerDataLayer.save(customer);
-    }
-
-    @Override
-    public Customer createCustomerRecord(Customer customer) {
-        return customerDataLayer.save(customer);
-    }
-
-    @Override
-    public void updateShoppingList(Customer customer, ExternalShoppingList consumerShoppingList) {
-
-        MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
-        MapperFacade mapper = mapperFactory.getMapperFacade();
-
-//        customer.addShoppingList(mapper.map(consumerShoppingList, ShoppingList.class));
-//        shoppingListDataLayer.updateShoppingList(mapper.map(consumerShoppingList, ShoppingList.class));
-        customerDataLayer.save(customer);
     }
 }
