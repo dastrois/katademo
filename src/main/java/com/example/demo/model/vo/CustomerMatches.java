@@ -24,7 +24,8 @@ public class CustomerMatches {
     }
 
     public void addDuplicate(Customer duplicate) {
-        duplicates.add(duplicate);
+        if (duplicate != null)
+            duplicates.add(duplicate);
     }
 
     public Collection<Customer> getDuplicates() {

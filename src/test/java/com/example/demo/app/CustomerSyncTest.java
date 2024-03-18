@@ -4,17 +4,16 @@ import com.example.demo.app.impl.CustomerSync;
 import com.example.demo.app.services.impl.CustomerDataAccess;
 import com.example.demo.model.constant.CustomerType;
 import com.example.demo.model.dao.Customer;
-import com.example.demo.model.exception.ConflictException;
 import com.example.demo.model.vo.CustomerMatches;
 import com.example.demo.model.vo.common.ExternalAddress;
 import com.example.demo.model.vo.common.ExternalCustomer;
 import com.example.demo.model.vo.common.ExternalShoppingItem;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,19 +46,15 @@ public class CustomerSyncTest {
 
         Customer customer = createCustomerWithSameCompanyAs(externalCustomer);
         customer.setExternalId(externalId);
-        customer.setCustomerType(CustomerType.PERSON);
-
 
         CustomerMatches cm = new CustomerMatches();
         cm.setCustomer(customer);
 
-        when(customerDataAccess.loadCompanyCustomer(anyString(), anyString())).thenReturn(cm);
+        when(customerDataAccess.loadCustomer(anyString(), anyString())).thenReturn(cm);
         when(customerDataAccess.createCustomerRecord(any())).thenReturn(customer);
 
-        Assertions.assertThrows(ConflictException.class, () -> {
-           boolean created = srv2Test.syncWithDataLayer(externalCustomer);
-        });
-
+        boolean created = srv2Test.syncWithDataLayer(externalCustomer);
+        Assert.isTrue(created == false, "");
     }
 
     @Test
@@ -80,7 +75,7 @@ public class CustomerSyncTest {
 //        CustomerDataAccess cda = mock(CustomerDataAccess.class);
 //        when(cda.loadCompanyCustomer(any(), any())).thenReturn(new CustomerMatches());
 
-        when(customerDataAccess.loadCompanyCustomer(anyString(), anyString())).thenReturn(new CustomerMatches());
+        when(customerDataAccess.loadCustomer(anyString(), anyString())).thenReturn(new CustomerMatches());
         when(customerDataAccess.createCustomerRecord(any())).thenReturn(customer);
 
         // ACT
