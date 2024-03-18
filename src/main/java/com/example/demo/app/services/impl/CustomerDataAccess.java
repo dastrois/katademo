@@ -85,12 +85,7 @@ public class CustomerDataAccess implements ICustomerDataAccess {
     }
 
     @Override
-    public Customer updateCustomerRecord(Customer customer) {
-        return customerDataLayer.save(customer);
-    }
-
-    @Override
-    public Customer createCustomerRecord(Customer customer) {
+    public Customer upSaveCustomer(Customer customer) {
         return customerDataLayer.save(customer);
     }
 }

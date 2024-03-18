@@ -46,20 +46,26 @@ public class CustomerSync implements com.example.demo.app.ICustomerSync {
 
         populateFields(externalCustomer, customer);
 
-        boolean created = false;
-        if (customer.getInternalId() == null) {
-            customer = createCustomer(customer);
-            created = true;
-        } else {
-            updateCustomer(customer);
-        }
+
+        boolean created = customer.getInternalId()== null;
+
+//        if (customer.getInternalId() == null) {
+//            customer = createCustomer(customer);
+//            created = true;
+//        } else {
+//            updateCustomer(customer);
+//        }
+
+        updateRelations(externalCustomer, customer);
+
+        updateCustomer(customer);
+
         if (customerMatches.hasDuplicates()) {
             for (Customer duplicate : customerMatches.getDuplicates()) {
                 updateDuplicate(externalCustomer, duplicate);
             }
         }
 
-        updateRelations(externalCustomer, customer);
 
         return created;
     }
@@ -73,11 +79,11 @@ public class CustomerSync implements com.example.demo.app.ICustomerSync {
             sl.add(si);
         }
         customer.setShoppingLists(sl);
-        customerDataAccess.updateCustomerRecord(customer);
+//        customerDataAccess.upSaveCustomer(customer);
     }
 
     private Customer updateCustomer(Customer customer) {
-        return this.customerDataAccess.updateCustomerRecord(customer);
+        return this.customerDataAccess.upSaveCustomer(customer);
     }
 
     private void updateDuplicate(ExternalCustomer externalCustomer, Customer duplicate) {
@@ -89,15 +95,13 @@ public class CustomerSync implements com.example.demo.app.ICustomerSync {
 
         duplicate.setName(externalCustomer.getName());
 
-        if (duplicate.getInternalId() == null) {
-            createCustomer(duplicate);
-        } else {
-            updateCustomer(duplicate);
-        }
-    }
+        updateCustomer(duplicate);
 
-    private Customer createCustomer(Customer customer) {
-        return this.customerDataAccess.createCustomerRecord(customer);
+//        if (duplicate.getInternalId() == null) {
+//            createCustomer(duplicate);
+//        } else {
+//            updateCustomer(duplicate);
+//        }
     }
 
     /**

@@ -11,8 +11,7 @@ public interface ICustomerDataAccess {
 
     CustomerMatches loadCustomer(String externalId, CustomerType type, String companyNumber) throws ConflictException;
 
-    Customer updateCustomerRecord(Customer customer);
+    Customer upSaveCustomer(Customer customer);
 
-    Customer createCustomerRecord(Customer customer);
 
 }
