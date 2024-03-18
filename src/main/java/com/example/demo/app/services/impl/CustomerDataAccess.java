@@ -58,7 +58,7 @@ public class CustomerDataAccess implements ICustomerDataAccess {
 
         if (type == CustomerType.COMPANY) {
             // check cmpy Id
-            if (customer.getCompanyNumber() != companyNumber)
+            if (!customer.getCompanyNumber().equals(companyNumber))
                 throw new ConflictException("Existing customer for externalNumber " + externalId + " already exists with different companyNumber");
         }
 
