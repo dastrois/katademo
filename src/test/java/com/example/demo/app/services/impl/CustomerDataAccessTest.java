@@ -78,7 +78,7 @@ class CustomerDataAccessTest {
     }
 
     @Test
-    void testLoadCompanyCustomerByCompanyName() {
+    void testLoadCompanyCustomerByCompanyNumber() {
 
         Customer cus = new Customer();
         cus.setCompanyNumber("123");
@@ -156,7 +156,7 @@ class CustomerDataAccessTest {
     }
 
     @Test
-    public void testLoadPersonCustomerCmp() {
+    public void testLoadPersonCustomerCompany() {
         Customer cus = new Customer();
         cus.setCustomerType(CustomerType.COMPANY);
         cus.setName("ert");
