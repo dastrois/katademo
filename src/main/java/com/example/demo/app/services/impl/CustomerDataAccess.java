@@ -17,7 +17,6 @@ public class CustomerDataAccess implements ICustomerDataAccess {
 
     public static final String ExternalId = "ExternalId";
     public static final String CompanyNumber = "CompanyNumber";
-
     private static final Logger log = LoggerFactory.getLogger(CustomerDataAccess.class);
 
     @Autowired
