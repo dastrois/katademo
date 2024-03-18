@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @Component
 @Validated
@@ -58,7 +57,7 @@ public class CustomerSync implements com.example.demo.app.ICustomerSync {
 
     private void populateShoppingList(ExternalCustomer externalCustomer, Customer customer) {
         log.debug("populate the shopping list");
-        List<ShoppingList> sl = new ArrayList<>();
+        ArrayList<ShoppingList> sl = new ArrayList<>();
         for (ExternalShoppingItem consumerShoppingItem : externalCustomer.getShoppingLists()) {
             ShoppingList si = new ShoppingList();
             si.setCustomer(customer);
@@ -68,8 +67,8 @@ public class CustomerSync implements com.example.demo.app.ICustomerSync {
         customer.setShoppingLists(sl);
     }
 
-    private Customer updateCustomer(Customer customer) {
-        return this.customerDataAccess.upSaveCustomer(customer);
+    private void updateCustomer(Customer customer) {
+        this.customerDataAccess.upSaveCustomer(customer);
     }
 
     private void updateDuplicate(ExternalCustomer externalCustomer, Customer duplicate) {
