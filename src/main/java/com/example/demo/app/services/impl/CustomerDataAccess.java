@@ -25,86 +25,51 @@ public class CustomerDataAccess implements ICustomerDataAccess {
     private ICustomerDataLayer customerDataLayer;
 
     @Override
-    public CustomerMatches loadCustomer(String externalId, String companyNumber) {
-        log.debug("load the customer with externalId: {} and companyId: {}", externalId, companyNumber);
+    public CustomerMatches loadCustomerCompany(String externalId, String companyNumber) {
+        log.debug("load the customer with companyId: {}", companyNumber);
 
         CustomerMatches matches = new CustomerMatches();
 
         Customer customer;
 
-        customer = this.customerDataLayer.findByExternalId(externalId);
+//        customer = this.customerDataLayer.findByExternalId(externalId);
+//        if (customer == null) {
+        customer = this.customerDataLayer.findByCompanyNumber(companyNumber);
         if (customer == null) {
-            customer = this.customerDataLayer.findByCompanyNumber(companyNumber);
-            if (customer == null) {
-                log.debug("nothing founded");
-                return matches;
-            } else {
-                if (!CustomerType.COMPANY.equals(customer.getCustomerType()))
-                    throw new ConflictException("Existing customer for companyNumber " + companyNumber + " already exists and is not a company");
-
-                log.debug("founded by company number");
-                matches.setMatchTerm(CompanyNumber);
-            }
-        } else {
-            if (!CustomerType.COMPANY.equals(customer.getCustomerType()))
-                throw new ConflictException("Existing customer for externalId " + externalId + " already exists and is not a company");
-
-            log.debug("founded by extId");
-            matches.setMatchTerm(ExternalId);
-
+            log.debug("nothing founded");
+            return matches;
         }
+        if (!CustomerType.COMPANY.equals(customer.getCustomerType()))
+            throw new ConflictException("Existing customer for companyNumber " + companyNumber + " already exists and is not a company");
+
+        log.debug("founded by company number");
+        matches.setMatchTerm(CompanyNumber);
 
         matches.setCustomer(customer);
 
-        switch (matches.getMatchTerm()) {
-            case CompanyNumber:
-                if (!customer.getExternalId().equals(externalId)){
-                    throw new ConflictException("");
-                }
-                break;
-            case ExternalId:
-                if (!customer.getCompanyNumber().equals(companyNumber)) {
-                    throw new ConflictException("");
-                }
-                break;
+        if (!customer.getExternalId().equals(externalId)) {
+            throw new ConflictException("");
         }
 
         matches.addDuplicate(this.customerDataLayer.findByMasterExternalId(externalId));
-
-//
-//
-//        if (matchByExternalId != null) {
-//            matches.setCustomer(matchByExternalId);
-//            matches.setMatchTerm("ExternalId");
-//            Customer matchByMasterId = this.customerDataLayer.findByMasterExternalId(externalId);
-//            if (matchByMasterId != null) matches.addDuplicate(matchByMasterId);
-//        } else {
-//            Customer matchByCompanyNumber = this.customerDataLayer.findByCompanyNumber(companyNumber);
-//            if (matchByCompanyNumber != null) {
-//                matches.setCustomer(matchByCompanyNumber);
-//                matches.setMatchTerm("CompanyNumber");
-//            }
-//        }
 
         return matches;
     }
 
     @Override
-    public CustomerMatches loadCustomer(String externalId) {
+    public CustomerMatches loadCustomer(String externalId, CustomerType type) throws ConflictException {
         log.debug("load the customer with externalId: {}", externalId);
 
         CustomerMatches matches = new CustomerMatches();
-        Customer matchByPersonalNumber = this.customerDataLayer.findByExternalId(externalId);
+        Customer matchByPersonalNumber = this.customerDataLayer.findByExternalIdAndCustomerType(externalId, type);
 
         if (matchByPersonalNumber == null)
             return matches;
 
-        if (!CustomerType.PERSON.equals(matchByPersonalNumber.getCustomerType()))
-            throw new ConflictException("Existing customer for externalCustomer " + externalId + " already exists and is not a person");
-
         matches.setCustomer(matchByPersonalNumber);
         matches.setMatchTerm(ExternalId);
 
+        matches.addDuplicate(this.customerDataLayer.findByMasterExternalId(externalId));
 
         return matches;
     }

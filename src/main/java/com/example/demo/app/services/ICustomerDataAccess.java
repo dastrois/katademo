@@ -1,14 +1,16 @@
 package com.example.demo.app.services;
 
 
+import com.example.demo.model.constant.CustomerType;
 import com.example.demo.model.dao.Customer;
+import com.example.demo.model.exception.ConflictException;
 import com.example.demo.model.vo.CustomerMatches;
 import com.example.demo.model.vo.common.ExternalShoppingItem;
 
 public interface ICustomerDataAccess {
-    CustomerMatches loadCustomer(String externalId, String companyNumber);
+    CustomerMatches loadCustomerCompany(String externalId,String companyNumber) throws ConflictException;
 
-    CustomerMatches loadCustomer(String externalId);
+    CustomerMatches loadCustomer(String externalId, CustomerType type) throws ConflictException;
 
     Customer updateCustomerRecord(Customer customer);
 

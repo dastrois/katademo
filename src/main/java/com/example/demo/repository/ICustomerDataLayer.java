@@ -1,10 +1,9 @@
 package com.example.demo.repository;
 
 
+import com.example.demo.model.constant.CustomerType;
 import com.example.demo.model.dao.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.Repository;
 
 public interface ICustomerDataLayer extends JpaRepository<Customer, Long> {
 
@@ -15,6 +14,8 @@ public interface ICustomerDataLayer extends JpaRepository<Customer, Long> {
 
 
     Customer findByExternalId(String externalId);
+
+    Customer findByExternalIdAndCustomerType(String externalId, CustomerType type);
 
     Customer findByMasterExternalId(String externalId);
 

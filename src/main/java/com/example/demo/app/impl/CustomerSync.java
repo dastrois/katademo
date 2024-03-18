@@ -31,7 +31,7 @@ public class CustomerSync implements com.example.demo.app.ICustomerSync {
         if (externalCustomer.isCompany()) {
             customerMatches = loadCompany(externalCustomer);
         } else {
-            customerMatches = loadPerson(externalCustomer);
+            customerMatches = loadPerson(externalCustomer, CustomerType.PERSON);
         }
         Customer customer = customerMatches.getCustomer();
 
@@ -111,6 +111,8 @@ public class CustomerSync implements com.example.demo.app.ICustomerSync {
             customer.setCustomerType(CustomerType.COMPANY);
         } else {
             customer.setCustomerType(CustomerType.PERSON);
+            if (customer.getBonusPointBalance() != externalCustomer.getBonusPointBalance())
+                customer.setBonusPointBalance(externalCustomer.getBonusPointBalance());
         }
         updateContactInfo(externalCustomer, customer);
     }
@@ -136,7 +138,7 @@ public class CustomerSync implements com.example.demo.app.ICustomerSync {
         final String externalId = externalCustomer.getExternalId();
         final String companyNumber = externalCustomer.getCompanyNumber();
 
-        CustomerMatches customerMatches = customerDataAccess.loadCustomer(externalId, companyNumber);
+        CustomerMatches customerMatches = customerDataAccess.loadCustomerCompany(externalId, companyNumber);
 
 //        if (customerMatches.getCustomer() != null && !CustomerType.COMPANY.equals(customerMatches.getCustomer().getCustomerType())) {
 //            throw new ConflictException("Existing customer for externalCustomer " + externalId + " already exists and is not a company");
@@ -164,7 +166,7 @@ public class CustomerSync implements com.example.demo.app.ICustomerSync {
         return customerMatches;
     }
 
-    private CustomerMatches loadPerson(ExternalCustomer externalCustomer) {
-        return customerDataAccess.loadCustomer(externalCustomer.getExternalId());
+    private CustomerMatches loadPerson(ExternalCustomer externalCustomer, CustomerType type) throws ConflictException {
+            return customerDataAccess.loadCustomer(externalCustomer.getExternalId(), type);
     }
 }

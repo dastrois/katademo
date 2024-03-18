@@ -50,7 +50,7 @@ public class CustomerSyncTest {
         CustomerMatches cm = new CustomerMatches();
         cm.setCustomer(customer);
 
-        when(customerDataAccess.loadCustomer(anyString(), anyString())).thenReturn(cm);
+        when(customerDataAccess.loadCustomerCompany(anyString(), anyString())).thenReturn(cm);
         when(customerDataAccess.createCustomerRecord(any())).thenReturn(customer);
 
         boolean created = srv2Test.syncWithDataLayer(externalCustomer);
@@ -75,7 +75,7 @@ public class CustomerSyncTest {
 //        CustomerDataAccess cda = mock(CustomerDataAccess.class);
 //        when(cda.loadCompanyCustomer(any(), any())).thenReturn(new CustomerMatches());
 
-        when(customerDataAccess.loadCustomer(anyString(), anyString())).thenReturn(new CustomerMatches());
+        when(customerDataAccess.loadCustomerCompany(anyString(), anyString())).thenReturn(new CustomerMatches());
         when(customerDataAccess.createCustomerRecord(any())).thenReturn(customer);
 
         // ACT

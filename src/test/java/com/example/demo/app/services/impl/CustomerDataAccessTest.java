@@ -27,7 +27,7 @@ class CustomerDataAccessTest {
     void testLoadCompanyCustomerNotFound() {
         Mockito.when(customerDataLayer.findByExternalId(ArgumentMatchers.anyString())).thenReturn(null);
 
-        CustomerMatches cm = testObject.loadCustomer("aaa", "bbb");
+        CustomerMatches cm = testObject.loadCustomerCompany("aaa", "bbb");
 
         Assert.notNull(cm, "");
         Assert.isTrue(cm.getCustomer() == null, "no customer");
@@ -43,7 +43,7 @@ class CustomerDataAccessTest {
 
         Mockito.when(customerDataLayer.findByExternalId(ArgumentMatchers.anyString())).thenReturn(cus);
 
-        CustomerMatches cm = testObject.loadCustomer("789", "123");
+        CustomerMatches cm = testObject.loadCustomerCompany("789", "123");
 
         Assert.notNull(cm, "");
         Assert.isTrue( cm.getDuplicates().size() == 0, "");
@@ -56,10 +56,10 @@ class CustomerDataAccessTest {
         cus.setCustomerType(CustomerType.COMPANY);
         cus.setExternalId("789");
 
-        Mockito.when(customerDataLayer.findByExternalId(ArgumentMatchers.anyString())).thenReturn(cus);
+        Mockito.when(customerDataLayer.findByCompanyNumber(ArgumentMatchers.anyString())).thenReturn(cus);
         Mockito.when(customerDataLayer.findByMasterExternalId(ArgumentMatchers.anyString())).thenReturn(cus);
 
-        CustomerMatches cm = testObject.loadCustomer("789", "123");
+        CustomerMatches cm = testObject.loadCustomerCompany("789", "123");
 
         Assert.notNull(cm, "");
         Assert.isTrue( cm.hasDuplicates(), "");
@@ -77,7 +77,7 @@ class CustomerDataAccessTest {
 
         Mockito.when(customerDataLayer.findByCompanyNumber(ArgumentMatchers.anyString())).thenReturn(cus);
 
-        CustomerMatches cm = testObject.loadCustomer("789", "123");
+        CustomerMatches cm = testObject.loadCustomerCompany("789", "123");
 
         Assert.notNull(cm, "");
         Assert.isTrue( ! cm.hasDuplicates(), "");
@@ -96,7 +96,7 @@ class CustomerDataAccessTest {
         Mockito.when(customerDataLayer.findByCompanyNumber(ArgumentMatchers.anyString())).thenReturn(cus);
 
         Assertions.assertThrows(ConflictException.class, () -> {
-            CustomerMatches cm = testObject.loadCustomer("78", "123");
+            CustomerMatches cm = testObject.loadCustomerCompany("78", "123");
                 });
 
     }
@@ -111,7 +111,7 @@ class CustomerDataAccessTest {
         Mockito.when(customerDataLayer.findByCompanyNumber(ArgumentMatchers.anyString())).thenReturn(cus);
 
         Assertions.assertThrows(ConflictException.class, () -> {
-            CustomerMatches cm = testObject.loadCustomer("789", "123");
+            CustomerMatches cm = testObject.loadCustomerCompany("789", "123");
                 });
 
     }
@@ -123,9 +123,9 @@ class CustomerDataAccessTest {
         cus.setName("ert");
         cus.setExternalId("jko");
 
-        Mockito.when(customerDataLayer.findByExternalId(ArgumentMatchers.anyString())).thenReturn(cus);
+        Mockito.when(customerDataLayer.findByExternalIdAndCustomerType(ArgumentMatchers.anyString(), ArgumentMatchers.any())).thenReturn(cus);
 
-        CustomerMatches cm = testObject.loadCustomer("ddd");
+        CustomerMatches cm = testObject.loadCustomer("ddd", CustomerType.PERSON);
         Assert.notNull(cm, "not null");
         Assert.notNull(cm.getCustomer(), "customer not null");
 
