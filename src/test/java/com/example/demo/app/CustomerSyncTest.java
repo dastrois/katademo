@@ -56,7 +56,7 @@ public class CustomerSyncTest {
     }
 
     @Test
-    public void syncCompanyByExternalId(){
+    public void syncCompanyByExtId(){
 
 
         String externalId = "12345";
@@ -67,6 +67,41 @@ public class CustomerSyncTest {
         Customer customer = createCustomerWithSameCompanyAs(externalCustomer);
         customer.setExternalId(externalId);
 
+        when(customerDataAccess.loadCustomer(anyString(), any(), any())).thenReturn(new CustomerMatches());
+        when(customerDataAccess.loadCustomerCompany(anyString(), anyString())).thenReturn(null);
+        when(customerDataAccess.upSaveCustomer(any())).thenReturn(customer);
+
+        // ACT
+        boolean created = srv2Test.syncWithDataLayer(externalCustomer);
+
+        // ASSERT
+        assertTrue(created);
+        ArgumentCaptor<Customer> argument = ArgumentCaptor.forClass(Customer.class);
+        verify(customerDataAccess, atLeastOnce()).upSaveCustomer(argument.capture());  // updateCustomerRecord(argument.capture());
+        Customer updatedCustomer = argument.getValue();
+        assertEquals(externalCustomer.getName(), updatedCustomer.getName());
+        assertEquals(externalCustomer.getExternalId(), updatedCustomer.getExternalId());
+        assertEquals(externalCustomer.getExternalId(),updatedCustomer.getMasterExternalId());
+        assertEquals(externalCustomer.getCompanyNumber(), updatedCustomer.getCompanyNumber());
+        assertEquals(externalCustomer.getPostalAddress().getStreet(), updatedCustomer.getAddress().getStreet());
+        assertEquals(externalCustomer.getShoppingLists().size(), updatedCustomer.getShoppingLists().size());
+        assertEquals(CustomerType.COMPANY, updatedCustomer.getCustomerType());
+        assertEquals(0, updatedCustomer.getBonusPointBalance());
+        assertNull(updatedCustomer.getPreferredStore());
+    }
+    @Test
+    public void syncCompanyByCompanyNumber(){
+
+
+        String externalId = "12345";
+
+        ExternalCustomer externalCustomer = createExternalCustomerCompany();
+        externalCustomer.setExternalId(externalId);
+
+        Customer customer = createCustomerWithSameCompanyAs(externalCustomer);
+        customer.setExternalId(externalId);
+
+        when(customerDataAccess.loadCustomer(anyString(), any(), any())).thenReturn(null);
         when(customerDataAccess.loadCustomerCompany(anyString(), anyString())).thenReturn(new CustomerMatches());
         when(customerDataAccess.upSaveCustomer(any())).thenReturn(customer);
 
