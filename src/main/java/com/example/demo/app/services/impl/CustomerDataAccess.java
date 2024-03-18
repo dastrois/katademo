@@ -23,7 +23,7 @@ public class CustomerDataAccess implements ICustomerDataAccess {
     private ICustomerDataLayer customerDataLayer;
 
     @Override
-    public CustomerMatches loadCustomerCompany(String externalId, String companyNumber) {
+    public CustomerMatches loadCustomerCompany(@NotNull String externalId, @NotNull String companyNumber) {
         log.debug("load the customer with companyId: {}", companyNumber);
 
         Customer customer = this.customerDataLayer.findByCompanyNumber(companyNumber);
@@ -44,7 +44,7 @@ public class CustomerDataAccess implements ICustomerDataAccess {
     }
 
     @Override
-    public CustomerMatches loadCustomer(String externalId, CustomerType type, String companyNumber) throws ConflictException {
+    public CustomerMatches loadCustomer(@NotNull String externalId, @NotNull CustomerType type, String companyNumber) throws ConflictException {
         log.debug("load the customer with externalId: {}", externalId);
 
         Customer customer = this.customerDataLayer.findByExternalIdAndCustomerType(externalId, type);
@@ -75,7 +75,7 @@ public class CustomerDataAccess implements ICustomerDataAccess {
     }
 
     @Override
-    public Customer upSaveCustomer(Customer customer) {
+    public Customer upSaveCustomer(@NotNull Customer customer) {
         return customerDataLayer.save(customer);
     }
 }
