@@ -10,6 +10,8 @@ import com.example.demo.model.vo.CustomerMatches;
 import com.example.demo.model.vo.common.ExternalCustomer;
 import com.example.demo.model.vo.common.ExternalShoppingItem;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
@@ -21,56 +23,40 @@ import java.util.List;
 @Validated
 public class CustomerSync implements com.example.demo.app.ICustomerSync {
 
+    private static final Logger log = LoggerFactory.getLogger(CustomerSync.class);
+
     @Autowired
     private CustomerDataAccess customerDataAccess;
 
     @Override
     public boolean syncWithDataLayer(@NotNull ExternalCustomer externalCustomer) {
+        log.debug("sync externalCustomer: {}", externalCustomer);
 
-        CustomerMatches customerMatches;
-        if (externalCustomer.isCompany()) {
-            customerMatches = loadPerson(externalCustomer, CustomerType.COMPANY);
-            if (customerMatches == null)
-                customerMatches = loadCompany(externalCustomer);
-        } else {
-            customerMatches = loadPerson(externalCustomer, CustomerType.PERSON);
-        }
+        // Get customer Matches from db
+        CustomerMatches customerMatches = loadPerson(externalCustomer, externalCustomer.isCompany() ? CustomerType.COMPANY : CustomerType.PERSON);
+        if (customerMatches == null && externalCustomer.isCompany())
+            customerMatches = loadCompany(externalCustomer);
 
-        Customer customer = customerMatches.getCustomer();
-
-        if (customer == null) {
-            customer = new Customer();
-            customer.setExternalId(externalCustomer.getExternalId());
-            customer.setMasterExternalId(externalCustomer.getExternalId());
-        }
-
+        // retrieve the founded customer or create a new one
+        Customer customer = (customerMatches != null && customerMatches.getCustomer() != null) ? customerMatches.getCustomer() : new Customer(externalCustomer.getExternalId(), externalCustomer.getExternalId());
         populateFields(externalCustomer, customer);
+        boolean created = customer.getInternalId() == null;
 
+        populateShoppingList(externalCustomer, customer);
 
-        boolean created = customer.getInternalId()== null;
-
-//        if (customer.getInternalId() == null) {
-//            customer = createCustomer(customer);
-//            created = true;
-//        } else {
-//            updateCustomer(customer);
-//        }
-
-        updateRelations(externalCustomer, customer);
-
+        // save the customer before handling duplicate
         updateCustomer(customer);
 
-        if (customerMatches.hasDuplicates()) {
+        if (customerMatches != null && customerMatches.hasDuplicates()) {
             for (Customer duplicate : customerMatches.getDuplicates()) {
                 updateDuplicate(externalCustomer, duplicate);
             }
         }
-
-
         return created;
     }
 
-    private void updateRelations(ExternalCustomer externalCustomer, Customer customer) {
+    private void populateShoppingList(ExternalCustomer externalCustomer, Customer customer) {
+        log.debug("populate the shopping list");
         List<ShoppingList> sl = new ArrayList<>();
         for (ExternalShoppingItem consumerShoppingItem : externalCustomer.getShoppingLists()) {
             ShoppingList si = new ShoppingList();
@@ -79,7 +65,6 @@ public class CustomerSync implements com.example.demo.app.ICustomerSync {
             sl.add(si);
         }
         customer.setShoppingLists(sl);
-//        customerDataAccess.upSaveCustomer(customer);
     }
 
     private Customer updateCustomer(Customer customer) {
@@ -96,18 +81,13 @@ public class CustomerSync implements com.example.demo.app.ICustomerSync {
         duplicate.setName(externalCustomer.getName());
 
         updateCustomer(duplicate);
-
-//        if (duplicate.getInternalId() == null) {
-//            createCustomer(duplicate);
-//        } else {
-//            updateCustomer(duplicate);
-//        }
     }
 
     /**
      * Map all fields from external --> Customer
      */
     private void populateFields(ExternalCustomer externalCustomer, Customer customer) {
+        log.debug("map the fields from external to internal");
         customer.setName(externalCustomer.getName());
         customer.setPreferredStore(externalCustomer.getPreferredStore());
         if (externalCustomer.isCompany()) {
@@ -134,15 +114,14 @@ public class CustomerSync implements com.example.demo.app.ICustomerSync {
     }
 
     private CustomerMatches loadCompany(ExternalCustomer externalCustomer) {
-        final String externalId = externalCustomer.getExternalId();
-        final String companyNumber = externalCustomer.getCompanyNumber();
+        log.debug("load the company for extCust: {}", externalCustomer);
 
-        CustomerMatches customerMatches = customerDataAccess.loadCustomerCompany(externalId, companyNumber);
-
-        return customerMatches;
+        return customerDataAccess.loadCustomerCompany(externalCustomer.getExternalId(), externalCustomer.getCompanyNumber());
     }
 
     private CustomerMatches loadPerson(ExternalCustomer externalCustomer, CustomerType type) throws ConflictException {
-            return customerDataAccess.loadCustomer(externalCustomer.getExternalId(), type, type == CustomerType.COMPANY ? externalCustomer.getCompanyNumber() : null);
+        log.debug("load the person for extCust: {}", externalCustomer);
+
+        return customerDataAccess.loadCustomer(externalCustomer.getExternalId(), type, type == CustomerType.COMPANY ? externalCustomer.getCompanyNumber() : null);
     }
 }

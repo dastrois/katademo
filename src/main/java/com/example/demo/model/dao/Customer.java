@@ -158,4 +158,12 @@ public class Customer implements Serializable {
                 externalId != null ? "externalId=" + externalId + ", " : "" +
                  "]";
     }
+
+    public Customer() {
+    }
+
+    public Customer(String externalId, String masterExternalId) {
+        this.externalId = externalId;
+        this.masterExternalId = masterExternalId;
+    }
 }
