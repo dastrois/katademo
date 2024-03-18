@@ -13,10 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.annotation.Validated;
 
 @Component
-@Validated
+
 public class CustomerDataAccess implements ICustomerDataAccess {
 
     private static final Logger log = LoggerFactory.getLogger(CustomerDataAccess.class);
