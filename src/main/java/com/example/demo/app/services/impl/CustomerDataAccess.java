@@ -3,6 +3,7 @@ package com.example.demo.app.services.impl;
 
 import com.example.demo.app.services.ICustomerDataAccess;
 import com.example.demo.model.constant.CustomerType;
+import com.example.demo.model.constant.MatchTerm;
 import com.example.demo.model.dao.Customer;
 import com.example.demo.model.exception.ConflictException;
 import com.example.demo.model.vo.CustomerMatches;
@@ -15,8 +16,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class CustomerDataAccess implements ICustomerDataAccess {
 
-    public static final String ExternalId = "ExternalId";
-    public static final String CompanyNumber = "CompanyNumber";
     private static final Logger log = LoggerFactory.getLogger(CustomerDataAccess.class);
 
     @Autowired
@@ -44,7 +43,7 @@ public class CustomerDataAccess implements ICustomerDataAccess {
             throw new ConflictException("Existing customer for companyNumber " + companyNumber + " already exists with different externalId");
         }
 
-        return completeResponse(customer, CompanyNumber);
+        return completeResponse(customer, MatchTerm.COMPANYNUMBER);
     }
 
     @Override
@@ -64,10 +63,10 @@ public class CustomerDataAccess implements ICustomerDataAccess {
                 throw new ConflictException("Existing customer for externalNumber " + externalId + " already exists with different companyNumber");
         }
 
-        return completeResponse(matchByPersonalNumber, ExternalId);
+        return completeResponse(matchByPersonalNumber, MatchTerm.ExTERNALID);
     }
 
-    private CustomerMatches completeResponse(Customer customer, String matchTerm){
+    private CustomerMatches completeResponse(Customer customer, MatchTerm matchTerm){
         log.debug("complete the response for customer: {}", customer);
 
         CustomerMatches matches = new CustomerMatches();

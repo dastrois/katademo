@@ -1,6 +1,7 @@
 package com.example.demo.model.vo;
 
 
+import com.example.demo.model.constant.MatchTerm;
 import com.example.demo.model.dao.Customer;
 
 import java.util.ArrayList;
@@ -8,7 +9,7 @@ import java.util.Collection;
 
 public class CustomerMatches {
     private Collection<Customer> duplicates = new ArrayList<>();
-    private String matchTerm;
+    private MatchTerm matchTerm;
     private Customer customer;
 
     public Customer getCustomer() {
@@ -32,11 +33,11 @@ public class CustomerMatches {
         return duplicates;
     }
 
-    public String getMatchTerm() {
+    public MatchTerm getMatchTerm() {
         return matchTerm;
     }
 
-    public void setMatchTerm(String matchTerm) {
+    public void setMatchTerm(MatchTerm matchTerm) {
         this.matchTerm = matchTerm;
     }
 }

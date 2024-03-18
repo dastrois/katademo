@@ -1,6 +1,7 @@
 package com.example.demo.app.services.impl;
 
 import com.example.demo.model.constant.CustomerType;
+import com.example.demo.model.constant.MatchTerm;
 import com.example.demo.model.dao.Customer;
 import com.example.demo.model.exception.ConflictException;
 import com.example.demo.model.vo.CustomerMatches;
@@ -82,7 +83,7 @@ class CustomerDataAccessTest {
         Assert.notNull(cm, "");
         Assert.isTrue( ! cm.hasDuplicates(), "");
         Assert.isTrue(cm.getCustomer().getCompanyNumber() == cus.getCompanyNumber(), "");
-        Assert.isTrue(cm.getMatchTerm() == CustomerDataAccess.CompanyNumber, "");
+        Assert.isTrue(cm.getMatchTerm() == MatchTerm.COMPANYNUMBER, "");
     }
 
     @Test
