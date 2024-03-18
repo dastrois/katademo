@@ -59,7 +59,7 @@ public class CustomerSync implements com.example.demo.app.ICustomerSync {
         }
 
         updateRelations(externalCustomer, customer);
-        updatePreferredStore(externalCustomer, customer);
+//        updatePreferredStore(externalCustomer, customer);
 
         return created;
     }
@@ -96,16 +96,13 @@ public class CustomerSync implements com.example.demo.app.ICustomerSync {
         }
     }
 
-    private void updatePreferredStore(ExternalCustomer externalCustomer, Customer customer) {
-        customer.setPreferredStore(externalCustomer.getPreferredStore());
-    }
-
     private Customer createCustomer(Customer customer) {
         return this.customerDataAccess.createCustomerRecord(customer);
     }
 
     private void populateFields(ExternalCustomer externalCustomer, Customer customer) {
         customer.setName(externalCustomer.getName());
+        customer.setPreferredStore(externalCustomer.getPreferredStore());
         if (externalCustomer.isCompany()) {
             customer.setCompanyNumber(externalCustomer.getCompanyNumber());
             customer.setCustomerType(CustomerType.COMPANY);
