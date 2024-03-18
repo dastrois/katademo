@@ -5,6 +5,8 @@ import com.example.demo.model.constant.CustomerType;
 import com.example.demo.model.dao.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface ICustomerDataLayer extends JpaRepository<Customer, Long> {
 
 //    Customer updateCustomerRecord(Customer customer);
@@ -17,7 +19,7 @@ public interface ICustomerDataLayer extends JpaRepository<Customer, Long> {
 
     Customer findByExternalIdAndCustomerType(String externalId, CustomerType type);
 
-    Customer findByMasterExternalId(String externalId);
+    List<Customer> findByMasterExternalId(String externalId);
 
     Customer findByCompanyNumber(String companyNumber);
 }

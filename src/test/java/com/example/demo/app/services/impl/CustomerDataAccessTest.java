@@ -12,6 +12,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import org.springframework.util.Assert;
 
+import java.util.ArrayList;
+import java.util.List;
+
 class CustomerDataAccessTest {
 
     @Mock
@@ -57,8 +60,11 @@ class CustomerDataAccessTest {
         cus.setCustomerType(CustomerType.COMPANY);
         cus.setExternalId("789");
 
+        List<Customer> dup = new ArrayList<>();
+        dup.add(cus);
+
         Mockito.when(customerDataLayer.findByCompanyNumber(ArgumentMatchers.anyString())).thenReturn(cus);
-        Mockito.when(customerDataLayer.findByMasterExternalId(ArgumentMatchers.anyString())).thenReturn(cus);
+        Mockito.when(customerDataLayer.findByMasterExternalId(ArgumentMatchers.anyString())).thenReturn(dup);
 
         CustomerMatches cm = testObject.loadCustomerCompany("789", "123");
 

@@ -6,6 +6,7 @@ import com.example.demo.model.dao.Customer;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class CustomerMatches {
     private Collection<Customer> duplicates = new ArrayList<>();
@@ -24,9 +25,9 @@ public class CustomerMatches {
         return !duplicates.isEmpty();
     }
 
-    public void addDuplicate(Customer duplicate) {
+    public void addDuplicate(List<Customer> duplicate) {
         if (duplicate != null)
-            duplicates.add(duplicate);
+            duplicates.addAll(duplicate);
     }
 
     public Collection<Customer> getDuplicates() {
