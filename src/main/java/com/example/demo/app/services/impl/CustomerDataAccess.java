@@ -8,6 +8,7 @@ import com.example.demo.model.dao.Customer;
 import com.example.demo.model.exception.ConflictException;
 import com.example.demo.model.vo.CustomerMatches;
 import com.example.demo.repository.ICustomerDataLayer;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,14 +26,10 @@ public class CustomerDataAccess implements ICustomerDataAccess {
     public CustomerMatches loadCustomerCompany(String externalId, String companyNumber) {
         log.debug("load the customer with companyId: {}", companyNumber);
 
-        CustomerMatches matches = new CustomerMatches();
-
-        Customer customer;
-
-        customer = this.customerDataLayer.findByCompanyNumber(companyNumber);
+        Customer customer = this.customerDataLayer.findByCompanyNumber(companyNumber);
         if (customer == null) {
             log.debug("nothing founded");
-            return matches;
+            return new CustomerMatches();
         }
 
         // Verify the right customer
@@ -50,23 +47,23 @@ public class CustomerDataAccess implements ICustomerDataAccess {
     public CustomerMatches loadCustomer(String externalId, CustomerType type, String companyNumber) throws ConflictException {
         log.debug("load the customer with externalId: {}", externalId);
 
-        Customer matchByPersonalNumber = this.customerDataLayer.findByExternalIdAndCustomerType(externalId, type);
+        Customer customer = this.customerDataLayer.findByExternalIdAndCustomerType(externalId, type);
 
-        if (matchByPersonalNumber == null){
+        if (customer == null){
             log.debug("nothing founded");
             return new CustomerMatches();
         }
 
         if (type == CustomerType.COMPANY){
             // check cmpy Id
-            if (matchByPersonalNumber.getCompanyNumber() != companyNumber)
+            if (customer.getCompanyNumber() != companyNumber)
                 throw new ConflictException("Existing customer for externalNumber " + externalId + " already exists with different companyNumber");
         }
 
-        return completeResponse(matchByPersonalNumber, MatchTerm.ExTERNALID);
+        return completeResponse(customer, MatchTerm.ExTERNALID);
     }
 
-    private CustomerMatches completeResponse(Customer customer, MatchTerm matchTerm){
+    private @NotNull CustomerMatches completeResponse(Customer customer, MatchTerm matchTerm){
         log.debug("complete the response for customer: {}", customer);
 
         CustomerMatches matches = new CustomerMatches();
