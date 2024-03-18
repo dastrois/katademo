@@ -31,8 +31,6 @@ public class CustomerDataAccess implements ICustomerDataAccess {
 
         Customer customer;
 
-//        customer = this.customerDataLayer.findByExternalId(externalId);
-//        if (customer == null) {
         customer = this.customerDataLayer.findByCompanyNumber(companyNumber);
         if (customer == null) {
             log.debug("nothing founded");
@@ -47,39 +45,36 @@ public class CustomerDataAccess implements ICustomerDataAccess {
             throw new ConflictException("Existing customer for companyNumber " + companyNumber + " already exists with different externalId");
         }
 
-
-        log.debug("founded by company number");
-        matches.setMatchTerm(CompanyNumber);
-
-        matches.setCustomer(customer);
-
-        matches.addDuplicate(this.customerDataLayer.findByMasterExternalId(externalId));
-
-        return matches;
+        return completeResponse(customer, CompanyNumber);
     }
 
     @Override
     public CustomerMatches loadCustomer(String externalId, CustomerType type, String companyNumber) throws ConflictException {
         log.debug("load the customer with externalId: {}", externalId);
 
-        CustomerMatches matches = new CustomerMatches();
         Customer matchByPersonalNumber = this.customerDataLayer.findByExternalIdAndCustomerType(externalId, type);
 
         if (matchByPersonalNumber == null){
             log.debug("nothing founded");
-            return matches;
+            return new CustomerMatches();
         }
 
         if (type == CustomerType.COMPANY){
-            // chack cmpy Id
+            // check cmpy Id
             if (matchByPersonalNumber.getCompanyNumber() != companyNumber)
                 throw new ConflictException("Existing customer for externalNumber " + externalId + " already exists with different companyNumber");
         }
 
-        matches.setCustomer(matchByPersonalNumber);
-        matches.setMatchTerm(ExternalId);
+        return completeResponse(matchByPersonalNumber, ExternalId);
+    }
 
-        matches.addDuplicate(this.customerDataLayer.findByMasterExternalId(externalId));
+    private CustomerMatches completeResponse(Customer customer, String matchTerm){
+        log.debug("complete the response for customer: {}", customer);
+
+        CustomerMatches matches = new CustomerMatches();
+        matches.setMatchTerm(matchTerm);
+        matches.setCustomer(customer);
+        matches.addDuplicate(this.customerDataLayer.findByMasterExternalId(customer.getExternalId()));
 
         return matches;
     }
