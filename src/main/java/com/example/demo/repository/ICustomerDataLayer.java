@@ -9,12 +9,6 @@ import java.util.List;
 
 public interface ICustomerDataLayer extends JpaRepository<Customer, Long> {
 
-//    Customer updateCustomerRecord(Customer customer);
-//
-//    Customer createCustomerRecord(Customer customer);
-
-
-
     Customer findByExternalId(String externalId);
 
     Customer findByExternalIdAndCustomerType(String externalId, CustomerType type);
