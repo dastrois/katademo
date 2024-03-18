@@ -30,12 +30,12 @@ class CustomerDataAccessTest {
     @Test
     public void testNullCmp(){
         Assertions.assertThrows(Exception.class, () -> {
-            CustomerMatches cm = service2Test.loadCustomerCompany(null, null);
+            service2Test.loadCustomerCompany(null, null);
         });
     }    @Test
     public void testNullPerson(){
         Assertions.assertThrows(Exception.class, () -> {
-            CustomerMatches cm = service2Test.loadCustomer(null, null, null);
+            service2Test.loadCustomer(null, null, null);
         });
     }
     @Test
