@@ -35,7 +35,7 @@ public class CustomerSyncTest {
 
 
     @Test
-    public void testExc(){
+    public void testSyncCompanyUpdate(){
 
         String externalId = "12345";
 
@@ -56,7 +56,7 @@ public class CustomerSyncTest {
     }
 
     @Test
-    public void syncCompanyByExtId(){
+    public void syncCompanyByExtIdCreate(){
 
 
         String externalId = "12345";
@@ -90,7 +90,7 @@ public class CustomerSyncTest {
         assertNull(updatedCustomer.getPreferredStore());
     }
     @Test
-    public void syncCompanyByCompanyNumber(){
+    public void syncCompanyByCompanyNumberCreate(){
 
 
         String externalId = "12345";
@@ -124,7 +124,7 @@ public class CustomerSyncTest {
         assertNull(updatedCustomer.getPreferredStore());
     }
     @Test
-    public void syncPersonByExternalId(){
+    public void syncPersonByExternalIdCreate(){
 
 
         String externalId = "12345";
