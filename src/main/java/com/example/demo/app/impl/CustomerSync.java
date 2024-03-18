@@ -68,8 +68,8 @@ public class CustomerSync implements com.example.demo.app.ICustomerSync {
         customer.setShoppingLists(sl);
     }
 
-    private Customer updateCustomer(Customer customer) {
-        return this.customerDataAccess.upSaveCustomer(customer);
+    private void updateCustomer(Customer customer) {
+        this.customerDataAccess.upSaveCustomer(customer);
     }
 
     private void updateDuplicate(ExternalCustomer externalCustomer, Customer duplicate) {
