@@ -6,7 +6,6 @@ import com.example.demo.model.constant.CustomerType;
 import com.example.demo.model.dao.Customer;
 import com.example.demo.model.exception.ConflictException;
 import com.example.demo.model.vo.CustomerMatches;
-import com.example.demo.model.vo.common.ExternalShoppingItem;
 import com.example.demo.repository.ICustomerDataLayer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,14 +92,5 @@ public class CustomerDataAccess implements ICustomerDataAccess {
     @Override
     public Customer createCustomerRecord(Customer customer) {
         return customerDataLayer.save(customer);
-    }
-
-    @Override
-    public void updateShoppingList(Customer customer, ExternalShoppingItem consumerShoppingList) {
-
-
-//        customer.addShoppingList(mapper.map(consumerShoppingList, ShoppingList.class));
-//        shoppingListDataLayer.updateShoppingList(mapper.map(consumerShoppingList, ShoppingList.class));
-        customerDataLayer.save(customer);
     }
 }

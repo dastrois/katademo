@@ -53,8 +53,6 @@ public class CustomerSync implements com.example.demo.app.ICustomerSync {
         } else {
             updateCustomer(customer);
         }
-//        updateContactInfo(externalCustomer, customer);
-
         if (customerMatches.hasDuplicates()) {
             for (Customer duplicate : customerMatches.getDuplicates()) {
                 updateDuplicate(externalCustomer, duplicate);
@@ -62,7 +60,6 @@ public class CustomerSync implements com.example.demo.app.ICustomerSync {
         }
 
         updateRelations(externalCustomer, customer);
-//        updatePreferredStore(externalCustomer, customer);
 
         return created;
     }
@@ -74,8 +71,8 @@ public class CustomerSync implements com.example.demo.app.ICustomerSync {
             si.setCustomer(customer);
             si.setProducts(consumerShoppingItem.getProducts());
             sl.add(si);
-//            this.customerDataAccess.updateShoppingList(customer, consumerShoppingItem);
         }
+        customer.setShoppingLists(sl);
         customerDataAccess.updateCustomerRecord(customer);
     }
 
@@ -130,11 +127,6 @@ public class CustomerSync implements com.example.demo.app.ICustomerSync {
         adr.setPostalCode(externalCustomer.getPostalAddress().getPostalCode());
 
         customer.setAddress(adr);
-//        MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
-//        MapperFacade mapper = mapperFactory.getMapperFacade();
-//
-//        customer.setAddress(mapper.map(externalCustomer.getPostalAddress(), Address.class));
-
     }
 
     private CustomerMatches loadCompany(ExternalCustomer externalCustomer) {
@@ -142,29 +134,6 @@ public class CustomerSync implements com.example.demo.app.ICustomerSync {
         final String companyNumber = externalCustomer.getCompanyNumber();
 
         CustomerMatches customerMatches = customerDataAccess.loadCustomerCompany(externalId, companyNumber);
-
-//        if (customerMatches.getCustomer() != null && !CustomerType.COMPANY.equals(customerMatches.getCustomer().getCustomerType())) {
-//            throw new ConflictException("Existing customer for externalCustomer " + externalId + " already exists and is not a company");
-//        }
-
-        if ("ExternalId".equals(customerMatches.getMatchTerm())) {
-            String customerCompanyNumber = customerMatches.getCustomer().getCompanyNumber();
-            if (!companyNumber.equals(customerCompanyNumber)) {
-                customerMatches.getCustomer().setMasterExternalId(null);
-                customerMatches.addDuplicate(customerMatches.getCustomer());
-                customerMatches.setCustomer(null);
-                customerMatches.setMatchTerm(null);
-            }
-        } else if ("CompanyNumber".equals(customerMatches.getMatchTerm())) {
-            String customerExternalId = customerMatches.getCustomer().getExternalId();
-            if (customerExternalId != null && !externalId.equals(customerExternalId)) {
-                throw new ConflictException("Existing customer for externalCustomer " + companyNumber + " doesn't match external id " + externalId + " instead found " + customerExternalId);
-            }
-            Customer customer = customerMatches.getCustomer();
-            customer.setExternalId(externalId);
-            customer.setMasterExternalId(externalId);
-            customerMatches.addDuplicate(null);
-        }
 
         return customerMatches;
     }

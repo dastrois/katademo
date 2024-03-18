@@ -5,7 +5,6 @@ import com.example.demo.model.constant.CustomerType;
 import com.example.demo.model.dao.Customer;
 import com.example.demo.model.exception.ConflictException;
 import com.example.demo.model.vo.CustomerMatches;
-import com.example.demo.model.vo.common.ExternalShoppingItem;
 
 public interface ICustomerDataAccess {
     CustomerMatches loadCustomerCompany(String externalId,String companyNumber) throws ConflictException;
@@ -16,5 +15,4 @@ public interface ICustomerDataAccess {
 
     Customer createCustomerRecord(Customer customer);
 
-    void updateShoppingList(Customer customer, ExternalShoppingItem consumerShoppingList);
 }
