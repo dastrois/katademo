@@ -87,7 +87,6 @@ class CustomerDataAccessTest {
         Assert.isTrue(cm.getDuplicates().iterator().next().getCompanyNumber() == cus.getCompanyNumber(), "");
 
     }
-
     @Test
     void testLoadCompanyCustomerByCompanyNumber() {
 
