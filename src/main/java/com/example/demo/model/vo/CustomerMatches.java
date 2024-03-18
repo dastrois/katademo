@@ -41,4 +41,12 @@ public class CustomerMatches {
     public void setMatchTerm(MatchTerm matchTerm) {
         this.matchTerm = matchTerm;
     }
+
+    @Override
+    public String toString() {
+        return "CustomerMatches [" +
+                matchTerm != null ? "matchTerm=" + matchTerm + ", " : "" +
+                customer != null ? "customer=" + customer + ", " : "" +
+                "]";
+    }
 }
