@@ -39,17 +39,20 @@ public class CustomerDataAccess implements ICustomerDataAccess {
             log.debug("nothing founded");
             return matches;
         }
+
+        // Verify the right customer
         if (!CustomerType.COMPANY.equals(customer.getCustomerType()))
             throw new ConflictException("Existing customer for companyNumber " + companyNumber + " already exists and is not a company");
+
+        if (!customer.getExternalId().equals(externalId)) {
+            throw new ConflictException("Existing customer for companyNumber " + companyNumber + " already exists with different externalId");
+        }
+
 
         log.debug("founded by company number");
         matches.setMatchTerm(CompanyNumber);
 
         matches.setCustomer(customer);
-
-        if (!customer.getExternalId().equals(externalId)) {
-            throw new ConflictException("");
-        }
 
         matches.addDuplicate(this.customerDataLayer.findByMasterExternalId(externalId));
 
@@ -57,14 +60,22 @@ public class CustomerDataAccess implements ICustomerDataAccess {
     }
 
     @Override
-    public CustomerMatches loadCustomer(String externalId, CustomerType type) throws ConflictException {
+    public CustomerMatches loadCustomer(String externalId, CustomerType type, String companyNumber) throws ConflictException {
         log.debug("load the customer with externalId: {}", externalId);
 
         CustomerMatches matches = new CustomerMatches();
         Customer matchByPersonalNumber = this.customerDataLayer.findByExternalIdAndCustomerType(externalId, type);
 
-        if (matchByPersonalNumber == null)
+        if (matchByPersonalNumber == null){
+            log.debug("nothing founded");
             return matches;
+        }
+
+        if (type == CustomerType.COMPANY){
+            // chack cmpy Id
+            if (matchByPersonalNumber.getCompanyNumber() != companyNumber)
+                throw new ConflictException("Existing customer for externalNumber " + externalId + " already exists with different companyNumber");
+        }
 
         matches.setCustomer(matchByPersonalNumber);
         matches.setMatchTerm(ExternalId);

@@ -29,10 +29,13 @@ public class CustomerSync implements com.example.demo.app.ICustomerSync {
 
         CustomerMatches customerMatches;
         if (externalCustomer.isCompany()) {
-            customerMatches = loadCompany(externalCustomer);
+            customerMatches = loadPerson(externalCustomer, CustomerType.COMPANY);
+            if (customerMatches == null)
+                customerMatches = loadCompany(externalCustomer);
         } else {
             customerMatches = loadPerson(externalCustomer, CustomerType.PERSON);
         }
+
         Customer customer = customerMatches.getCustomer();
 
         if (customer == null) {
@@ -167,6 +170,6 @@ public class CustomerSync implements com.example.demo.app.ICustomerSync {
     }
 
     private CustomerMatches loadPerson(ExternalCustomer externalCustomer, CustomerType type) throws ConflictException {
-            return customerDataAccess.loadCustomer(externalCustomer.getExternalId(), type);
+            return customerDataAccess.loadCustomer(externalCustomer.getExternalId(), type, type == CustomerType.COMPANY ? externalCustomer.getCompanyNumber() : null);
     }
 }

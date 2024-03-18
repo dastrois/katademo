@@ -125,7 +125,34 @@ class CustomerDataAccessTest {
 
         Mockito.when(customerDataLayer.findByExternalIdAndCustomerType(ArgumentMatchers.anyString(), ArgumentMatchers.any())).thenReturn(cus);
 
-        CustomerMatches cm = testObject.loadCustomer("ddd", CustomerType.PERSON);
+        CustomerMatches cm = testObject.loadCustomer("ddd", CustomerType.PERSON, null);
+        Assert.notNull(cm, "not null");
+        Assert.notNull(cm.getCustomer(), "customer not null");
+
+        Assert.isTrue(cm.getCustomer().getName() == cus.getName(), "customer name");
+
+    }
+    @Test
+    public void testLoadPersonNotFounded(){
+        Mockito.when(customerDataLayer.findByExternalIdAndCustomerType(ArgumentMatchers.anyString(), ArgumentMatchers.any())).thenReturn(null);
+
+        CustomerMatches cm = testObject.loadCustomer("ddd", CustomerType.PERSON, null);
+        Assert.notNull(cm, "not null");
+        Assert.isTrue(cm.getCustomer() == null, "customer not null");
+
+
+    }
+    @Test
+    public void testLoadPersonCustomerCmp(){
+        Customer cus = new Customer();
+        cus.setCustomerType(CustomerType.COMPANY);
+        cus.setName("ert");
+        cus.setExternalId("jko");
+        cus.setCompanyNumber("789");
+
+        Mockito.when(customerDataLayer.findByExternalIdAndCustomerType(ArgumentMatchers.anyString(), ArgumentMatchers.any())).thenReturn(cus);
+
+        CustomerMatches cm = testObject.loadCustomer("ddd", CustomerType.COMPANY, "789");
         Assert.notNull(cm, "not null");
         Assert.notNull(cm.getCustomer(), "customer not null");
 

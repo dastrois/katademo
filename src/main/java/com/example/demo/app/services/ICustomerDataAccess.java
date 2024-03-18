@@ -10,7 +10,7 @@ import com.example.demo.model.vo.common.ExternalShoppingItem;
 public interface ICustomerDataAccess {
     CustomerMatches loadCustomerCompany(String externalId,String companyNumber) throws ConflictException;
 
-    CustomerMatches loadCustomer(String externalId, CustomerType type) throws ConflictException;
+    CustomerMatches loadCustomer(String externalId, CustomerType type, String companyNumber) throws ConflictException;
 
     Customer updateCustomerRecord(Customer customer);
 
