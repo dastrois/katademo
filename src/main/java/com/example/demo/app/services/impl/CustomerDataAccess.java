@@ -51,12 +51,12 @@ public class CustomerDataAccess implements ICustomerDataAccess {
 
         Customer customer = this.customerDataLayer.findByExternalIdAndCustomerType(externalId, type);
 
-        if (customer == null){
+        if (customer == null) {
             log.debug("nothing founded");
             return new CustomerMatches();
         }
 
-        if (type == CustomerType.COMPANY){
+        if (type == CustomerType.COMPANY) {
             // check cmpy Id
             if (customer.getCompanyNumber() != companyNumber)
                 throw new ConflictException("Existing customer for externalNumber " + externalId + " already exists with different companyNumber");
@@ -65,7 +65,7 @@ public class CustomerDataAccess implements ICustomerDataAccess {
         return completeResponse(customer, MatchTerm.ExTERNALID);
     }
 
-    private @NotNull CustomerMatches completeResponse(Customer customer, MatchTerm matchTerm){
+    private @NotNull CustomerMatches completeResponse(Customer customer, MatchTerm matchTerm) {
         log.debug("complete the response for customer: {}", customer);
 
         CustomerMatches matches = new CustomerMatches();
