@@ -47,6 +47,7 @@ public class CustomerSync implements com.example.demo.app.ICustomerSync {
         // save the customer before handling duplicate
         updateCustomer(customer);
 
+        // handle duplicate
         if (customerMatches != null && customerMatches.hasDuplicates()) {
             for (Customer duplicate : customerMatches.getDuplicates()) {
                 updateDuplicate(externalCustomer, duplicate);
