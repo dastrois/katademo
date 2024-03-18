@@ -8,6 +8,7 @@ import com.example.demo.model.vo.CustomerMatches;
 import com.example.demo.model.vo.common.ExternalAddress;
 import com.example.demo.model.vo.common.ExternalCustomer;
 import com.example.demo.model.vo.common.ExternalShoppingItem;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
@@ -33,6 +34,12 @@ public class CustomerSyncTest {
         MockitoAnnotations.initMocks(this);
     }
 
+    @Test
+    public void testNull(){
+        Assertions.assertThrows(Exception.class, () -> {
+            srv2Test.syncWithDataLayer(null);
+        });
+    }
 
     @Test
     public void testSyncCompanyUpdate(){
