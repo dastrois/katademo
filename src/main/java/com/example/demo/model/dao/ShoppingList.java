@@ -8,7 +8,6 @@ import jakarta.persistence.ManyToOne;
 import java.io.Serializable;
 
 @Entity
-//@Table(name = "shoppinglist")
 public class ShoppingList implements Serializable {
     @Id
     private Long id;

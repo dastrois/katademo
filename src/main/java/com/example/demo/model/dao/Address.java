@@ -9,15 +9,11 @@ import java.io.Serializable;
 
 @Entity
 public class Address implements Serializable {
-
     @Id
     private Long id;
     private String street;
     private String city;
     private String postalCode;
-
-    private Customer customer;
-
     public Address(String street, String city, String postalCode) {
         this.street = street;
         this.city = city;
